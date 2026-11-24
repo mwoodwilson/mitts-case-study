@@ -15,8 +15,10 @@ Contents:
 7. [The rename: Corner becomes Mitts](#7-the-rename-corner-becomes-mitts)
 8. [Making the coach sound like a coach](#8-making-the-coach-sound-like-a-coach)
 9. [Grading the trainer](#9-grading-the-trainer)
-10. [Lessons for other PMs](#10-lessons-for-other-pms)
-11. [Where it stands](#11-where-it-stands)
+10. [Building Card](#10-building-card)
+11. [Getting to release](#11-getting-to-release)
+12. [Lessons for other PMs](#12-lessons-for-other-pms)
+13. [Where it stands](#13-where-it-stands)
 
 ---
 
@@ -119,7 +121,7 @@ Two problems I found by hand (four button sizes in three styles on the end scree
 |---|---|
 | <img src="images/live-call-before.webp" width="260" alt="Workout screen with the combo call shrunk to a speck"> | <img src="images/live-call-after.webp" width="260" alt="Workout screen with the combo call at full size"> |
 
-*The live call on a 390-point iPhone. Screens in this document predate the rename and the Card redesign.*
+*The live call on a 390-point iPhone. The screens in this section predate the rename and the Card redesign; [section 10](#10-building-card) shows the redesigned app.*
 
 **Batch A** fixed the broken things: the speck, over-long automatic names, the screen saying "Rest" after the final bell, toasts covering buttons, and five small bugs found while capturing. It started with a WHEN/THEN spec covering offline, first launch and large text, with one decision for me at the top: [examples/spec-batch-a.md](examples/spec-batch-a.md).
 
@@ -151,7 +153,7 @@ After the audit mockups, I concluded the existing look wasn't worth polishing sc
 
 That review also caught an error in an earlier rule: "safe choice on top" in popups was the opposite of Apple's guidance. It was corrected and logged as a correction.
 
-**The build plan.** The Card build is a 40-task plan in seven phases, written by one agent and reviewed and revised by another before it reached me. An iPhone SE check found the current app already breaks on the SE's shorter screen with very long combos; those findings became requirements. The plan opens with the five questions only I could answer, each with a recommendation and what yes and no would mean. I approved all five recommendations. Excerpt: [examples/plan-card-build.md](examples/plan-card-build.md).
+**The build plan.** The Card build is a 40-task plan in seven phases, written by one agent and reviewed and revised by another before it reached me. An iPhone SE check found the current app already breaks on the SE's shorter screen with very long combos; those findings became requirements. The plan opens with the five questions only I could answer, each with a recommendation and what yes and no would mean. I approved all five recommendations. Excerpt: [examples/plan-card-build.md](examples/plan-card-build.md). How the build went is in [section 10](#10-building-card).
 
 ---
 
@@ -208,7 +210,61 @@ Grading changed the product directly: beginners never throw the same hand twice 
 
 ---
 
-## 10. Lessons for other PMs
+## 10. Building Card
+
+The plan ran as written: 40 tasks in seven phases over five days. One agent built each task and a fresh reviewer checked it before the next began, and a whole-branch review closed the build. Each phase ended with screenshots of every changed screen on two phones (an iPhone 16e and the smaller iPhone SE) at normal and largest text, plus a list of every call made on my behalf.
+
+| Round, before | Round, after | Train, before | Train, after |
+|---|---|---|---|
+| <img src="images/card-round-before.webp" width="180" alt="Old workout screen: a dark screen with the clock and the combo in grey type"> | <img src="images/card-round-after.webp" width="180" alt="New workout screen: round 3 on a lit card with the clock, the combo 2 3 2 3 below it"> | <img src="images/train-before.webp" width="180" alt="Old Train tab: Quick Start as a line of text with Start and Edit buttons, a list of saved workouts below"> | <img src="images/train-after.webp" width="180" alt="New Train tab: Quick Start as a large lit card showing 3 × 2:00, Build a workout as its own card, Saved folded below"> |
+
+**The status page that misled me.** After Phase 2 I opened the progress page expecting redesigned screens and saw what looked like rounder buttons. Phase 2 had only replaced the parts that screens are built from; the redesigned screens were due in Phases 3 to 6. The build was on track, but a before-and-after page hid how far it still was from what I'd approved. From then on, every status page showed three columns: today, the approved design, the result. I also chose which screen to rebuild first: the workout screen, the biggest change and where people spend the most time.
+
+**Changes I asked for mid-build were drawn before they were built.**
+
+- **Train.** Quick Start and Build a workout became large tappable cards, a tap anywhere on Quick Start starts it, and Saved folds away below and remembers how you left it. It was mocked, approved through three asks, and built into its phase. Cost: about half a day.
+- **A way back out of a mistaken start.** During the Get ready countdown, a back arrow returns to Train with no popup, because nothing has been trained yet. It fades at the first bell. I asked for a little more room around it on the mock before approving.
+- **Not everything needs a mock.** Quick Start's editor now ends in "Save and start" and "Start", so changed settings can run once without overwriting Quick Start. Two standard buttons, low risk: built directly.
+
+**The platform moved under the design.** iOS 26 redrew the iPhone's own menus as a small floating box with no Cancel button, not the bottom sheet the approved design draws. I chose to draw our own sheet, the same on every iOS version. Cost: about half a session, and the menus no longer follow Apple's future restyles automatically.
+
+**Bugs found along the way.** A Coach Mode workout with about two full rounds of long combos made a share code that the friend's app refused, because of an old 4,000-character cap. The cap is now 100,000, enough for the largest workout the app allows. Cost: a friend on an older build has to update before adding one of those big workouts. Deleting also changed: anything you delete goes at once and a toast offers Undo, which puts it back exactly where it was. Before, a popup asked first.
+
+**Accessibility held to numbers, not taste.**
+
+- Two small labels on the workout screen were drawn in the approved design at 3.8:1 and 3.4:1 contrast. I approved lightening both to 5:1: small text under 4.5:1 is hard to read mid-round.
+- Every screen was checked at the largest text size on both phones. Nothing shrinks to fit, lines that would push content off screen sit closer together, and long popups scroll as one so nothing is cut off.
+- VoiceOver reads a long call as "Slip right", not "Slip R", and on the paused screen it reads why the workout paused before the Restart button.
+
+**A risk accepted with a condition.** The glove logo was traced from a freely licensed photo, and that licence may require a credit. The recommendation was to retrace it from my own photo. I chose to keep the logo and have the licence checked by someone qualified before the public release. Test builds aren't affected, so the check blocks nothing until then.
+
+**On a real phone before merging.** The redesign stayed on its own branch until a TestFlight build passed my release check on my phone: clean install, permissions allowed and denied, airplane mode, lock and unlock, headphones, the silent switch, large text, and force-quit and reopen. It passed, and the redesign was merged. Automated tests went from 789 after Batch A to about 2,000. The ten tap-through flows (Maestro) couldn't run on the new simulators for most of the build. They were fixed in the last phase and now pass on both phones.
+
+---
+
+## 11. Getting to release
+
+With the redesign merged, one session went to the unglamorous last stretch: intermittent test failures and housekeeping.
+
+**Intermittent failures, diagnosed one by one.** Three tests failed now and then; the worst failed about one run in five. The tempting move is to loosen the check or re-run until it's green. The rule was the opposite: diagnose each failure before changing anything, never weaken a test, and prove the fix with numbers.
+
+- **In every case the app was right.** Each test expected something stricter than the approved behaviour, which showed only on a rare random draw. Example: when the phone froze the app at the exact moment a round began, rewinding to the round's first combo correctly rang the start bell first, because it had never rung, and then called the combo. The test expected the combo first.
+- **Each fix kept the check at least as strict.** The failing case became its own named test, so it runs the same way every time, and any future random failure can now be replayed exactly.
+- **Proving the fix found five more.** So the whole test suite was run under 400 different random seeds, and all five were fixed the same way. All 400 seeds pass now, along with 2,000 simulated workouts and five full runs back to back.
+
+**Debugging surfaced a product gap. It came to me as a question, not a fix.** Some of the trainer's own combos include footwork the combo builder doesn't offer, such as "circle out". Those combos can't appear in the paused screen's list, so they can't be rewound or saved. It's existing behaviour, not a regression, so it came to me as a decision with a recommendation: show them with Rewind only, after release, with a spec and a mock first. It didn't come as a quiet change.
+
+**Housekeeping with effects a user or reviewer would see:**
+
+- An old notifications package, kept only to clean up after a retired reminder feature, was removed once testers had run that cleanup. The app no longer carries a push-notification capability it doesn't use.
+- The build upload went from 1.4 GB to 49 MB by leaving design and research files out of it.
+- App Review notes are drafted. They explain what makes Mitts more than a timer (the guideline that rejects look-alike apps in crowded categories) and how a reviewer can test coaching with the phone locked.
+
+**A slip, owned.** A documentation-only save went out alongside a test run that then failed. No app code was affected, but it broke the rule that every save waits for the type check and the tests. It was reported in the next status update along with the fix: a save always waits for the result.
+
+---
+
+## 12. Lessons for other PMs
 
 - **Diagnose before you prescribe.** The rejection looked like a paperwork problem. It was one library behaviour that also explained three bugs. A day of auditing saved weeks of patching symptoms.
 - **Make every decision cheap to review.** Every ask comes with a recommendation, where to look, and what yes and no each mean. Every call made on my behalf is logged with its cost if wrong, so it can be reversed in one sentence.
@@ -217,15 +273,18 @@ Grading changed the product directly: beginners never throw the same hand twice 
 - **Evidence over assertion.** Screenshots on two phones at two text sizes, test counts before and after, and a list of what still looks wrong.
 - **Test on real conditions, not your own device.** The worst bug of the project was invisible on my phone and broken on most others.
 - **Name the cost of every decision.** A decision with no stated cost hasn't been thought through.
+- **Show the target beside the result.** A before-and-after page can look like progress, or like a lack of it. Putting the approved design in the middle column shows exactly how far there is to go.
+- **An intermittent failure is a bug until proven otherwise.** Re-running until it's green hides it. Diagnosing it showed the app was right, and the stricter tests now protect it.
+- **Engineering finds product gaps; the PM decides them.** A gap found while debugging comes back as a question with a recommendation, not a quiet change.
 
 ---
 
-## 11. Where it stands
+## 13. Where it stands
 
-- The engine rebuild and native audio player are built and tested.
-- The UX audit's broken items (Batch A) and the rename to Mitts are built.
-- The rebuilt coach voice is shipped in the test build, in both voices.
-- The Card design system is signed off; its 40-task build plan is approved and runs next.
-- Then background coaching, a device soak test, and the App Store resubmission, with review notes explaining what makes Mitts more than a timer.
+- The engine rebuild, the native audio player and background coaching are built and tested.
+- The UX audit's broken items (Batch A), the rename to Mitts and the rebuilt coach voice in both voices are built.
+- The Card redesign is built and passed my release check on a TestFlight build, then was merged.
+- The release scans pass: no placeholder text, no dead buttons, and every line the trainer can say has a recording.
+- Left before App Store resubmission: the logo licence check, one more TestFlight build, and my approval of the App Review notes.
 
 The app isn't released yet. Nothing in this repo claims users, ratings or revenue.

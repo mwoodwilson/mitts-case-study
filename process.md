@@ -49,12 +49,15 @@ Examples from the log: a single-punch call keeps its natural delivery because it
   - Why: the worst bug in the project (the live combo call shrinking to a speck) was invisible on my phone at normal text and broken on most other iPhones.
 - **Tap-through flows** (Maestro) cover the main paths on the simulator.
 - **Plain results:** type check clean, test counts before and after, which flows passed.
+- **Status pages show three columns: today, the approved design, the result.**
+  - Why: midway through the redesign, a before-and-after page made a correct but early build look like rounder buttons. With the target in the middle, the remaining gap is obvious at a glance.
 - **What still looks wrong is listed,** not hidden. Batch A's evidence ended with a section called "Things that look wrong on screen (not fixed here)". Example: [examples/evidence-batch-a.md](examples/evidence-batch-a.md).
 
 ## 6. Tests are never weakened
 
 - **Never weaken or delete an existing test.** A test that encodes the old version of a change I approved may be updated, and every one is listed in the report: which test, what changed, and why it's not weaker.
 - **Every past bug becomes a test.** Randomised tests also run hundreds of simulated workouts full of pauses, locks, rewinds and crashes against a list of rules that must always hold.
+- **An intermittent failure is diagnosed, never re-run until green.** Each one is traced to its cause before anything changes, and the failing case is pinned as its own named test. Before release, eight were diagnosed this way. The app was right every time, and the whole suite now passes under 400 different random seeds.
 - **Rules I care about become guards.** For example: no text in the app may shrink to fit; the old product name may not return to on-screen text; every line the trainer can say must have a recording before release.
 
 ## 7. Grading the subjective part
@@ -73,9 +76,13 @@ The same shape worked for the voice: measure what can be measured (pitch, loudne
 
 - **One phase per session** (an audit, an audio fix, one design batch). A session never mixes phases. Why: context stays focused, and each phase ends in a reviewable state.
 - **A handoff file is kept current as work goes,** not only at the end, so a new session picks up exactly where the last stopped.
-- **Save at every step that passes the type check and the tests;** back up to a private repository after each batch.
+- **Save at every step that passes the type check and the tests;** back up to a private repository after each batch. The save waits for the result, never runs alongside it.
+  - Why: once, a documentation-only save went out next to a test run that then failed. No app code was affected, but the slip was reported in the next update.
 - **Working files that are costly to redo live in the project,** never in a temporary folder. Why: an outage once wiped the temporary folders mid-session. No app work was lost, but the voice tools had to be rebuilt from the session record.
 
 ## 9. Release discipline
 
 The release check runs on a TestFlight build on my own phone: a clean install, permissions allowed and denied, airplane mode, lock and unlock, headphones, the silent switch, large text, and force-quit and reopen. Before release: a scan for placeholder text and dead buttons, and App Review notes that explain what makes Mitts more than a timer.
+
+- **Big changes merge only after the phone check.** The Card redesign stayed on its own branch until its TestFlight build passed.
+- **No test build starts without my yes.** Each one is an upload to Apple and a phone check for me, so it's always an ask.

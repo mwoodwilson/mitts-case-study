@@ -10,6 +10,67 @@ How to read it:
 
 ---
 
+## 23 November
+
+**Intermittent test failures: diagnose first, never weaken a test.** Eight tests failed now and then. Each was diagnosed before anything changed, and in every case the app was right: the test's expectation was stricter than the approved behaviour on a rare random draw. Each check stayed at least as strict, and each failing case is now pinned as its own named test.
+- Proof: 2,000 simulated workouts, five full runs back to back, and the whole test suite under 400 random seeds.
+
+**Post-merge tidy: the retired reminder's cleanup and its notifications package are removed.** Testers had already run the cleanup. The app no longer carries a push-notification capability it doesn't use. Cost: the next test build rebuilds the app's native layer.
+
+**The build upload leaves out design and research files.** 1.4 GB down to 49 MB.
+
+**Process correction:** a documentation-only save went out alongside a test run that then failed. No app code was affected. A save now always waits for its checks.
+
+**Open: trainer combos with footwork the builder doesn't offer.** They can't be rewound or saved from the paused screen. Recommended: show them with Rewind only, after release, with a spec and a mock first.
+
+## 22 November
+
+**The redesign passed my phone check and was merged.** A TestFlight build went through the full release check on my phone before the redesign left its branch.
+
+**Two small workout-screen labels lightened to 5:1 contrast.** The approved design drew them at 3.8:1 and 3.4:1. Why: small text under 4.5:1 is hard to read mid-round. Cost: none visible beyond slightly brighter labels.
+
+**The glove logo stays, with a condition.** It was traced from a freely licensed photo whose licence may require a credit. The recommendation was to retrace it; I chose to keep it and have someone qualified check the licence before the public release. Test builds aren't affected.
+
+## 21 November
+
+**A row's title goes on top and its details underneath, always.** One row had them the other way round. A test now holds the rule.
+
+**Coach Mode's list says "Tap to edit, hold to reorder" under a real heading.** People need to see that the rows open and move.
+
+**Decided on my behalf (final phase: Settings, menus, large text, VoiceOver):** at the largest text, lines sit closer together so content stays on screen, and long popups scroll as one so nothing is cut off. VoiceOver reads "Slip right", not "Slip R". Under Reduce Motion, swiped rows snap and sheets fade. The ten tap-through flows run again and pass on both phones.
+
+## 20 November
+
+**Our own menu sheet.** iOS 26 redrew the iPhone's menus as a small floating box with no Cancel, unlike the approved design. Mitts now draws the bottom sheet itself, the same on every iOS version.
+- Cost: about half a session, and the menus no longer follow Apple's future restyles automatically.
+
+**Decided on my behalf: bigger workouts can be shared.** A share code was refused over 4,000 characters, so a large Coach Mode workout couldn't be sent. The cap is now 100,000, enough for the largest workout the app allows.
+- Cost: a friend on an older build has to update before adding one of those workouts.
+
+**Decided on my behalf: every Undo after a delete puts the item back where it was,** whether the delete came from a swipe or a menu.
+
+## 19 November
+
+**Train gets big tappable cards, with Saved folded below.** I asked for it, it was mocked, and I approved it through three asks: the layout, a tap anywhere on Quick Start starts it, and Saved remembers whether it was left open.
+- Cost: about half a day.
+
+**A back arrow during the Get ready countdown.** A stray tap on Quick Start is one tap to undo, with no popup, because nothing has been trained yet. It fades at the first bell. Approved from a mock, with a little more room around it.
+
+**Quick Start's editor ends in "Save and start" and "Start".** Changed settings can run once without overwriting Quick Start. Two standard buttons, so it was built without a mock.
+
+**Decided on my behalf: the usage-data question becomes a card on Train after the first finished workout,** not a popup. One more on-phone yes/no records that a workout was finished. Nothing new leaves the phone.
+
+## 18 November
+
+**Every status page shows three columns: today, the approved design, the result.** After Phase 2 the progress page looked like rounder buttons, because only the building blocks had changed so far. A before-and-after alone hid how far the build was from what I'd approved.
+- Cost: each page needs the approved picture captured beside the app's.
+
+**The workout screen is rebuilt first.** It's the biggest change and where people spend the most time.
+
+**The Card build's behaviour document is approved as written.** It's the agreed WHEN/THEN behaviour every phase is built and checked against.
+
+**Decided on my behalf: readability over the picture where they disagree.** For example, Delete on a swiped row is black words on red, because the drawn grey on red measured 4.47:1, just under the 4.5:1 standard.
+
 ## 17 November
 
 **The voice rebuild ships with round 7 as the recipe for both voices.** After seven listening rounds I approved round 7 for the male and female voice. An unvalidated eighth round for the female voice was dropped rather than shipped untested. Every line was rebuilt in both voices behind an automated quality gate and is now in the test build.
